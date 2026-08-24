@@ -1,0 +1,35 @@
+{
+  "summary": "Verified iteration_8 changes: multi-draft management, auto-save + restore banner, legacy key migration, and hook refactor (useDraft + usePinchZoom). All individual features work end-to-end (rename, load, delete, empty state, persistence, legacy migration, banner restore/discard). However a CRITICAL storage-quota bug prevents saving more than one draft when using the default sample canvas.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "useDraft.saveNamed / Editor.saveDraft",
+        "issue": "Only ONE draft can be persisted when the canvas is a full-size image. The dataURL of the default 1067x1600 sample image is ~4MB base64; two such drafts exceed the ~5MB localStorage quota. `write()` catches the QuotaExceededError silently, `saveNamed` returns {ok:false}, and only the first draft persists. UI shows toast 'Draft too large to save' but never explains it — users can 'save' repeatedly and never see a 2nd card appear. Effectively defeats the MAX_DRAFTS=20 promise. Recommend: (1) downscale/compress the stored draft data (e.g. re-encode via off-screen canvas at reduced dimensions or use JPEG at 0.8), (2) migrate storage to IndexedDB, or (3) at minimum surface a persistent error state in the Drafts panel when a save is rejected.",
+        "selector": "[data-testid=save-draft-button]",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix draft storage strategy: compress or downscale the dataURL before writing, or move to IndexedDB. Under current implementation MAX_DRAFTS is unreachable with real images.",
+    "Surface QuotaExceededError more clearly in the Drafts panel (persistent inline error, not just a fading toast)."
+  ],
+  "critical_code_review_comments": [
+    "useDraft.js: `write()` silently swallows QuotaExceededError which hides real user-visible failure. Consider logging or bubbling.",
+    "useDraft.js mount effect returns cleanup=undefined and depends on []. Fine, but StrictMode double-invoke is harmless because setDrafts([]) is idempotent — still worth an explicit guard.",
+    "Editor.jsx line 160 useEffect depends on `draft` object which is a fresh object every render — the auto-save setInterval is torn down + recreated on every render. Depend on `draft.saveAuto` (memoized) instead of the whole `draft` object.",
+    "Editor.jsx line 127 uses `draft.drafts.length + 1` in the default prompt name which can collide with existing names; consider a stable counter or timestamp default.",
+    "Draft item stores full dataURL (huge). No thumbnail vs data separation — thumbnails should be smaller than the full image."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "n/a (skipped)", "frontend": "~85% (all features work individually; multi-draft save blocked by quota only when using large images)" },
+  "seed_data_creation": "Tests used a 1x1 PNG dataURL injected via localStorage / window.localStorage to bypass the size limit and verify list behavior.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Feature works for tiny images. When retesting after fix, verify that at least 5 saved drafts of a realistic (>=1MP) canvas can be persisted, listed, renamed, loaded, and deleted, and that reload preserves them. Storage keys are 'photoedit_drafts_v2' (list) and 'photoedit_autosave_v1' (single). Legacy 'photoedit_draft_v1' migration also verified working. When testing save-draft-button dialog, use `page.on('dialog', ...)` and wait ~2.5s between saves so the save-toast can clear. All other UI testids present and working: draft-restore-banner, restore-draft-button, discard-draft-button, drafts-tab-count, draft-card-N, draft-name-N, draft-load-N, draft-rename-N, draft-delete-N, drafts-empty, drafts-auto-hint.",
+  "rca of the issue": "Root cause: photoedit_drafts_v2 stores full-size PNG dataURLs. `JSON.stringify([draft1, draft2]).length` for the default sample image reached 8.22 MB (verified via monkey-patched localStorage.setItem log: `[LS-SET] key=photoedit_drafts_v2 vlen=8222188`). Browsers reject setItem with QuotaExceededError above ~5 MB. `write()` in useDraft.js catches all errors and returns false, so `saveNamed` returns {ok:false} and setDrafts is skipped — leaving state and storage at just the first draft. Reproduction: open /editor with the default image, click save-draft-button twice with different names, switch to Drafts tab — only the first name appears. Mitigation: downscale draft images before serialization (e.g., toDataURL('image/jpeg', 0.7) at max 1024px longest edge for the stored copy), or migrate to IndexedDB which allows much larger blobs."
+}

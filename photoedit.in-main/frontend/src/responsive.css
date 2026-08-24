@@ -1,0 +1,6 @@
+.canvas-wrap{transform:translate(var(--pan-x,0px),var(--pan-y,0px)) scale(var(--canvas-scale,1))!important}
+.menu-popover{position:absolute;z-index:5;top:45px;left:150px;background:#252c36;border:1px solid #3b4655;box-shadow:0 12px 30px #080a0e;padding:11px 14px;display:grid;gap:5px;min-width:190px;color:#e8eef5}
+.menu-popover span{font-size:11px;color:#9da8b6;font-weight:400}
+@media(max-width:900px){.canvas-stage{place-items:center start}.canvas-wrap{transform-origin:left center!important}}
+@media(max-width:900px){.screenshot-button{font-size:0;gap:0;padding:8px}.top-actions{gap:4px}.top-actions .divider{display:none}}
+@media(max-width:900px){.capture-button{display:grid}}

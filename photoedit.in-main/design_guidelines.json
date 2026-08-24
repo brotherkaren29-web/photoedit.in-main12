@@ -1,0 +1,38 @@
+{
+  "app_name": "photoedit.in",
+  "app_description": "Professional browser-based photo editor workspace inspired by industry standard desktop image suites, featuring custom canvas, layer management, non-destructive tools, filters, crop/resize, text, and undo/redo without mandatory account creation.",
+  "theme": "dark-professional",
+  "typography": {
+    "headings": "Manrope, sans-serif",
+    "body": "Inter, sans-serif",
+    "mono": "JetBrains Mono, monospace"
+  },
+  "colors": {
+    "background": "#121214",
+    "surface": "#1a1a1e",
+    "surface_elevated": "#24242c",
+    "primary": "#3b82f6",
+    "primary_hover": "#2563eb",
+    "border": "#2e2e38",
+    "text_main": "#f4f4f6",
+    "text_muted": "#9ca3af"
+  },
+  "layout": {
+    "structure": "top-menu, sub-toolbar, left-tools-panel, center-canvas-workspace, right-panels-stack",
+    "grids": "dense dashboard grid for layers and properties"
+  },
+  "component_path": "/app/frontend/src/components",
+  "image_urls": [
+    {
+      "category": "sample_canvas_backgrounds",
+      "url": "https://images.unsplash.com/photo-1604871000636-074fa5117945?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Abstract blue and red digital painting sample for photo editing tests"
+    },
+    {
+      "category": "sample_canvas_abstract",
+      "url": "https://images.unsplash.com/photo-1620207418302-439b387441b0?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "description": "Purple and pink flowing wallpaper sample"
+    }
+  ],
+  "instructions_to_main_agent": "Ensure all interactive elements have data-testid attributes. Implement the exact Photopea-like professional layout: top menu bar, tool options bar, vertical left tool palette, central interactive HTML5 canvas workspace with pan/zoom and layers, right-hand collapsible panels for Layers, History, Adjustments, and Info. Support image upload, filters (brightness, contrast, blur, grayscale, sepia, invert), crop, brush, shapes, text insertion, history undo/redo, and export. Use dark professional workspace styling with clean borders and high contrast controls."
+}

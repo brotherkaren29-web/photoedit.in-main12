@@ -1,0 +1,22 @@
+{
+  "summary": "Retest of iteration_16 code-review fixes on /editor: (1) Escape during re-edit now calls cancelText() and restores original text layer, (2) HTML text-layer overlay now has fontWeight:700 to match baked bold pixel output. Both fixes verified. Regressions on cancel-button restore, destructive-op bakes, re-edit style change also verified.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Editor.jsx is 1236 lines — consider splitting into hooks (useTextTool, useDraft, useCanvasHistory) and subcomponents (TextOverlay, Toolbar, RightPanel) for maintainability.",
+    "In cancelText(), restoring original by appending to end of textObjects can subtly change z-order if the array is used to represent stack order. Consider restoring at original index."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100% (targeted fixes)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "iteration_17 confirmed both code-review fixes: Escape during re-edit restores original layer (verified via [data-testid=text-layer-*] count == 1 after Escape on pre-filled overlay). fontWeight computed style is '700' for text-layer elements. Cancel button also restores original. Rotate/destructive-op bakes text layers correctly (layer count goes to 0 after rotate).",
+  "rca of the issue": "N/A — fixes verified working. Root cause of prior bug was window keydown Escape handler calling setActiveText(null) directly, skipping the restore-original branch in cancelText(). Fix routes Escape through cancelText() unconditionally."
+}

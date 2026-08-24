@@ -1,0 +1,23 @@
+{
+  "summary": "Retest of iteration_11 HIGH bugs on photoedit.in /editor. Both fixes verified PASS. (1) Pan handlers are now bound to .canvas-stage: at 156% zoom a mouse drag by (+200,+150) on the stage produced stage.scrollLeft delta=+200 and scrollTop delta=+150 exactly. At default 66% zoom the stage has no scroll room (sw==cw) so scroll deltas are 0 but pointerdown on the checkerboard OUTSIDE the canvas rect completed with no drawing and no console errors, confirming the handler is on the stage and canvas onPointerDown early-returns for move/hand. Low-zoom (25%) drag also completes without crash. (2) Canvas offscreen bug is fixed: at 200% zoom, canvas computed width/height (1067x1600) equals wrap computed width/height (1067x1600) and the canvas bounding rect overlaps the stage viewport. Regression PASS: brush stroke at 156% draws (pixel [69,43,60]->[255,77,109]) and 'Brush stroke' recorded in History (count=4). Ctrl+wheel and Meta+wheel both increase zoom (115->130->145); plain wheel does not change zoom. All 5 top menus (File/Edit/Image/Filter/View) open. /ads.txt returns 200. All 7 routes (/, /editor, /about, /contact, /privacy, /terms, /disclaimer) return 200.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Editor.jsx is still 977 lines (>700 guideline). Consider extracting usePan, useWheelZoom, and toolbar/right-panel into sub-modules.",
+    "Cursor 'grabbing' during active pan still relies on panRef.current mutation which does not trigger re-render, so cursor stays 'grab' during drag. Minor polish only — use a boolean state instead if the grabbing cursor is desired.",
+    "At default 66% zoom, .canvas-stage has scrollWidth==clientWidth so pan produces zero scroll delta; this is expected behaviour but consider disabling the grab cursor when there is no scroll room, so users get better affordance."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "iteration_11's two HIGH bugs are fixed and verified in iteration_12: (a) pan handlers are on .canvas-stage (onStagePointerDown/Move/Up in Editor.jsx lines 444-467, wired on div line 821-824), canvas onPointerDown early-returns for move/hand (line 473), (b) App.css '.canvas-wrap canvas{width:100%;height:100%}' makes canvas fill the wrap at all zooms. Ctrl/Meta+wheel zoom, drawing at high zoom, low-zoom no-crash pan, /ads.txt, all 7 routes, and menu dropdowns all working. No known regressions.",
+  "rca of the issue": "Fixed by main agent prior to iteration_12: pan handlers were moved from <canvas> to the <div className='canvas-stage'> so pan works when pointer starts anywhere in the stage, and canvas onPointerDown for move/hand early-returns to let events bubble to the stage handler. Additionally App.css was changed from `.canvas-wrap canvas{width:900px;height:600px}` to `width:100%;height:100%` so the canvas element always fills .canvas-wrap (which uses inline width:dims.w × height:dims.h), keeping the image on-screen at 150-200% zoom."
+}

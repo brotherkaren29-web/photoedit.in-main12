@@ -1,0 +1,22 @@
+{
+  "summary": "Frontend-only testing of new Photopea-style Move tool. Canvas-wrap uses CSS transform translate(--pan-x,--pan-y) scale(--canvas-scale). Verified via canvas.getBoundingClientRect() before/after real mouse drags at multiple zoom levels. All core Move tool assertions PASS: move at default 66% zoom (exact +200/+150), negative drag (~-120/-80), high zoom 156% (~+100/+100 when dragged from stable point), low zoom 25% (exact +80/+60), hand tool same behavior (~+90/+70), fit-canvas resets pan to centered origin, ctrl+wheel zoom still works and preserves pan, brush stroke draws at correct canvas coordinates after panning (sampled pixel matches brush color), text overlay appears at correct click point after pan (X exact; Y offset by textSize is intentional per code — overlay top-left = activeText.y - textSize).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "onStagePointerMove uses setPan on every mousemove which schedules React re-renders per event; consider requestAnimationFrame or CSS variable direct write for smoother panning at high frequency.",
+    ".canvas-stage still has overflow:auto (scrollWidth 1974 > clientWidth 1591 at 156% zoom). Since pan now happens via CSS transform, the scrollbars/scrolling on stage are dead code; recommend overflow:hidden to prevent user-initiated scroll from double-moving the canvas."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Move tool re-architected to use CSS transform translate for pan (pan.x, pan.y state in Editor.jsx). Verified visible movement at all zoom levels via getBoundingClientRect deltas matching real mouse drag deltas within ±2px. Note: when dragging near the edge of the visible stage at extreme zoom, real mouse drags may auto-scroll the overflow:auto stage which can skew rect measurements — start drags from a stable interior point. Text overlay Y position is intentionally activeText.y - textSize (see Editor.jsx line 990). File menu testid is 'menu-file' but only appears in certain contexts; use direct text 'New blank canvas' or check menu structure.",
+  "rca of the issue": "Previous move tool adjusted canvas-stage scrollLeft/scrollTop which only produced visible motion when overflow existed (i.e., zoomed in enough). Fix translates the .canvas-wrap element via CSS transform variables --pan-x/--pan-y updated by pointermove — motion is now visible at any zoom including default 66% where the image fits. Confirmed: default-zoom drag by (200,150) yields exact 200/150 client-pixel delta on canvas.getBoundingClientRect."
+}
