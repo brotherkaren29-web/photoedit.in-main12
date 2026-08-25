@@ -6,7 +6,7 @@ import { ADSENSE_PUBLISHER_ID } from "../config";
 // don't produce 4xx requests to pagead2.googlesyndication.com during development).
 export default function AdsenseLoader() {
   useEffect(() => {
-    if (!ADSENSE_PUBLISHER_ID || ADSENSE_PUBLISHER_ID.includes("XXXXXXXXXXXXXXXX")) return;
+    if (!ADSENSE_PUBLISHER_ID || ADSENSE_PUBLISHER_ID.includes("8946799794760149")) return;
 
     // Ownership verification meta tag (idempotent)
     if (!document.querySelector('meta[name="google-adsense-account"]')) {

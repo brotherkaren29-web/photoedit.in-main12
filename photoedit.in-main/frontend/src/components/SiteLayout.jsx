@@ -18,7 +18,7 @@ export default function SiteLayout({ title, subtitle, children }) {
     <div className="site" data-testid="site-layout">
       <header className="site-header">
         <Link to="/" className="site-brand" data-testid="site-brand-link">
-          <span className="brand-mark">p</span>
+          <img src="/logo.png" alt="Logo" style={{ height: '32px', width: 'auto', marginRight: '8px' }} />
           <span>{SITE_NAME.replace(".in", "")}<span className="brand-dot">.in</span></span>
         </Link>
         <nav className="site-nav" data-testid="site-nav">

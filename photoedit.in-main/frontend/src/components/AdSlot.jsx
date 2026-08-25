@@ -5,7 +5,7 @@ import { ADSENSE_PUBLISHER_ID } from "../config";
 // Docs: https://support.google.com/adsense/answer/9274019
 export default function AdSlot({ slot = "0000000000", format = "auto", layout, className = "" }) {
   const ref = useRef(null);
-  const configured = ADSENSE_PUBLISHER_ID && !ADSENSE_PUBLISHER_ID.includes("XXXXXXXXXXXXXXXX");
+  const configured = ADSENSE_PUBLISHER_ID && !ADSENSE_PUBLISHER_ID.includes("8946799794760149");
 
   useEffect(() => {
     if (!configured) return;
