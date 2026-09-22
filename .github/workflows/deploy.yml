@@ -20,10 +20,10 @@ jobs:
         run: |
           npm install --legacy-peer-deps
           npm run build
-        working-directory: ./photoedit.in-main/frontend
+        working-directory: ./frontend
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./photoedit.in-main/frontend/build
+          publish_dir: ./frontend/build
