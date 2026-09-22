@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Dependencies & Build
         run: |
-          cd frontend
+          cd photoedit.in-main/frontend
           npm install --legacy-peer-deps
           npm run build
 
